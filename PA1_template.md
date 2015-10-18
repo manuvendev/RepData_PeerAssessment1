@@ -24,7 +24,7 @@ print(xt, type="html")
 ```
 
 <!-- html table generated in R 3.1.2 by xtable 1.7-4 package -->
-<!-- Sun Oct 18 23:34:47 2015 -->
+<!-- Sun Oct 18 23:42:15 2015 -->
 <table border=1>
 <tr> <th>  </th> <th> day </th> <th> total_steps </th>  </tr>
   <tr> <td align="right"> 1 </td> <td align="right"> 1349128800.00 </td> <td align="right"> 126 </td> </tr>
@@ -187,10 +187,6 @@ median(stepsPerDay$total_steps)
 ```
 ## [1] 10766.19
 ```
-
-Do these values differ from the estimates from the first part of the assignment? 
-
-What is the impact of imputing missing data on the estimates of the total daily number of steps?
 
 ## Are there differences in activity patterns between weekdays and weekends?
 

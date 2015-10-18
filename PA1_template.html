@@ -79,7 +79,7 @@ stepsPerDay &lt;- sqldf(&quot;select date as day,sum(steps) total_steps from dfC
 xt &lt;- xtable(stepsPerDay)
 print(xt, type=&quot;html&quot;)</code></pre>
 <!-- html table generated in R 3.1.2 by xtable 1.7-4 package -->
-<!-- Sun Oct 18 23:34:47 2015 -->
+<!-- Sun Oct 18 23:42:15 2015 -->
 <table border="1">
 <tr> <th>  </th> <th> 
 day
@@ -506,8 +506,6 @@ qplot(total_steps, data = stepsPerDay, main = 'Steps per Day')</code></pre>
 <pre><code>## [1] 10766.19</code></pre>
 <pre class="r"><code>median(stepsPerDay$total_steps)</code></pre>
 <pre><code>## [1] 10766.19</code></pre>
-<p>Do these values differ from the estimates from the first part of the assignment?</p>
-<p>What is the impact of imputing missing data on the estimates of the total daily number of steps?</p>
 </div>
 <div id="are-there-differences-in-activity-patterns-between-weekdays-and-weekends" class="section level2">
 <h2>Are there differences in activity patterns between weekdays and weekends?</h2>
