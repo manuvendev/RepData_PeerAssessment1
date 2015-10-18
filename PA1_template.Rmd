@@ -9,17 +9,105 @@ output:
 ## Loading and preprocessing the data
 
 
+```{r, cache=TRUE}
+df <- read.csv("activity.csv")
+df$date <- as.POSIXct(df$date,format="%Y-%m-%d")
+dfClean <- df[complete.cases(df),]
+```
 
 ## What is mean total number of steps taken per day?
 
+Steps per day
+```{r countTable, results='asis', message=FALSE}
+library(sqldf)
+library(xtable)
+stepsPerDay <- sqldf("select date as day,sum(steps) total_steps from dfClean group by date")   
+xt <- xtable(stepsPerDay)
+print(xt, type="html")
+```
 
+Steps per day histogram
+```{r, message=FALSE}
+library(ggplot2)
+qplot(total_steps, data = stepsPerDay, main = 'Steps per Day')
+```
+
+Meand and median
+```{r}
+mean(stepsPerDay$total_steps)
+median(stepsPerDay$total_steps)
+```
 
 ## What is the average daily activity pattern?
 
+```{r}
+stepsPerInterval <- sqldf("select interval, avg(steps) mean_steps from dfClean group by interval")   
+
+ggplot(data = stepsPerInterval, aes(interval, mean_steps )) + geom_line() + ylab("Average Number of Steps Per 5-Minute Interval") + xlab("Time Interval")
+
+```
+
+5-minute interval with the maximum average number of steps.
+```{r}
+idx <- which.max( stepsPerInterval$mean_steps )
+stepsPerInterval$interval[[idx]]
+```
 
 
 ## Imputing missing values
+Missing values
+```{r}
+dfNAs <- df[!complete.cases(df),]
+nrow(dfNAs)
+```
+
+Replacing missing values by the mean for that 5-minute intervals.
+
+```{r}
+for (i in 1:length(df[, 1])){
+    if (is.na(df[i,1])){
+        date <- df[i,2]
+        interval <- df[i,3]
+        mean_steps <- subset(stepsPerInterval, interval == df[i,3])$mean_steps
+        df[i,1] <- mean_steps
+    }
+
+}
+
+```
 
 
+Steps per day histogram
+```{r, message=FALSE}
+stepsPerDay <- sqldf("select date as day,sum(steps) total_steps from df group by date") 
+library(ggplot2)
+qplot(total_steps, data = stepsPerDay, main = 'Steps per Day')
+```
+
+Meand and median
+```{r}
+mean(stepsPerDay$total_steps)
+median(stepsPerDay$total_steps)
+```
 
 ## Are there differences in activity patterns between weekdays and weekends?
+
+```{r}
+weekenddays <- c("Saturday","Sunday")
+areWeekends <- weekdays(df$date) %in% weekenddays
+
+df$dayOfTheWeek <- rep(NA, nrow(df))
+df[areWeekends,]$dayOfTheWeek <- "weekend"
+df[!areWeekends,]$dayOfTheWeek <- "weekday"
+df$dayOfTheWeek <- as.factor(df$dayOfTheWeek)
+
+
+stepsPerIntervalPerDay <- sqldf("select interval, avg(steps) mean_steps, dayOfTheWeek from df group by interval,dayOfTheWeek")  
+
+sp <- ggplot(data = stepsPerIntervalPerDay, aes(interval, mean_steps)) + geom_line() + ylab("Average Number of Steps Per 5-Minute Interval") + xlab("Time Interval")
+
+sp + facet_grid(dayOfTheWeek ~ .)
+
+
+```
+
