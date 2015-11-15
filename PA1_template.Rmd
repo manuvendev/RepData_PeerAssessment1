@@ -11,6 +11,7 @@ output:
 
 ```{r, cache=TRUE}
 df <- read.csv("activity.csv")
+df$dateString <- df$date
 df$date <- as.POSIXct(df$date,format="%Y-%m-%d")
 dfClean <- df[complete.cases(df),]
 ```
@@ -21,9 +22,10 @@ Steps per day
 ```{r countTable, results='asis', message=FALSE}
 library(sqldf)
 library(xtable)
-stepsPerDay <- sqldf("select date as day,sum(steps) total_steps from dfClean group by date")   
+stepsPerDay <- sqldf("select dateString as day,sum(steps) total_steps from dfClean group by date")   
 xt <- xtable(stepsPerDay)
 print(xt, type="html")
+
 ```
 
 Steps per day histogram
